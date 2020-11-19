@@ -1,0 +1,1 @@
+gcc -o getKeyFrame getKeyFrame.c -lavformat -lavcodec -lswscale -lz -lm -lavutil
