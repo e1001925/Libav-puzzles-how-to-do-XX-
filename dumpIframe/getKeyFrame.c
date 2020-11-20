@@ -123,13 +123,19 @@ int main(int argc, char *argv[]) {
   // Read frames and save first five frames to disk
   int j = 0;
   while (av_read_frame(pFormatCtx, &packet) >= 0) {
-
+    j++;
     // Is this a packet from the video stream?
-    if (packet.stream_index == videoStream && (packet.flags & AV_PKT_FLAG_KEY)) {
-      printf("video pts: %d, dts : %d\n", packet.pts, packet.dts);
+    if (packet.stream_index == videoStream &&
+        (packet.flags & AV_PKT_FLAG_KEY)) {
       // Decode video frame
       avcodec_decode_video2(pCodecCtx, pFrame, &frameFinished, &packet);
 
+      printf("Frame %c (%d) pts %d(%.3f sec) dts %d key_frame %d [coded_picture_number "
+             "%d, display_picture_number %d]\n",
+             av_get_picture_type_char(pFrame->pict_type),
+             pCodecCtx->frame_number, pFrame->pts, pFrame->pts * av_q2d(pFormatCtx->streams[videoStream]->time_base), pFrame->pkt_dts,
+             pFrame->key_frame, pFrame->coded_picture_number,
+             pFrame->display_picture_number);
       // Did we get a video frame?
       if (frameFinished) {
         // Convert the image from its native format to RGB
