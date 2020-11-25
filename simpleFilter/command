@@ -1,0 +1,1 @@
+g++ -o simpleFilter simpleFilter.cpp -lavformat -lavcodec -lswscale -lz -lm -lavutil -lavFilter

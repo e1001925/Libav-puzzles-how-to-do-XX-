@@ -1,0 +1,1 @@
+ffplay -video_size 480x272 sintel_480x272_yuv420p.yuv
