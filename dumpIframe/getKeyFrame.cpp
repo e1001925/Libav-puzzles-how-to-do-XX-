@@ -1,11 +1,10 @@
+extern "C"
+{
 #include <libavcodec/avcodec.h>
-
 #include <libavformat/avformat.h>
-
 #include <libswscale/swscale.h>
-
 #include <stdio.h>
-
+}
 // compatibility with newer API
 #if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55, 28, 1)
 #define av_frame_alloc avcodec_alloc_frame
@@ -34,7 +33,7 @@ void SaveFrame(AVFrame *pFrame, int width, int height, int iFrame) {
   fclose(pFile);
 }
 
-int main(int argc, char *argv[]) {
+int main() {
   // Initalizing these to NULL prevents segfaults!
   AVFormatContext *pFormatCtx = NULL;
   int i, videoStream;
@@ -48,16 +47,12 @@ int main(int argc, char *argv[]) {
   int numBytes;
   uint8_t *buffer = NULL;
   struct SwsContext *sws_ctx = NULL;
-
-  if (argc < 2) {
-    printf("Please provide a movie file\n");
-    return -1;
-  }
+  char *path = "../res/sample-mp4-file.mp4";
   // Register all formats and codecs
   av_register_all();
 
-  // Open video file
-  if (avformat_open_input(&pFormatCtx, argv[1], NULL, NULL) != 0)
+  // Open video file-
+  if (avformat_open_input(&pFormatCtx, path, NULL, NULL) != 0)
     return -1; // Couldn't open file
 
   // Retrieve stream information
@@ -65,7 +60,7 @@ int main(int argc, char *argv[]) {
     return -1; // Couldn't find stream information
 
   // Dump information about file onto standard error
-  av_dump_format(pFormatCtx, 0, argv[1], 0);
+  av_dump_format(pFormatCtx, 0, path, 0);
 
   // Find the first video stream
   videoStream = -1;
